@@ -1,0 +1,62 @@
+/* 
+* @Author: lizhen
+* @Date:   2015-11-11 17:46:52
+* @Last Modified by:   lizhen
+* @Last Modified time: 2015-11-12 15:24:27
+*/
+
+.hide{display: none}
+.am-list > li > a.p_1_rem,.p_1_rem{
+    padding: 1rem;
+}
+.am-list > li > a{
+    color: #666;
+}
+.am-list > li.current > a{
+    color: #0e90d2;
+}
+.am-list > li > a > i{
+    color: #f25c49;
+}
+.am-list > li.current > .nav_list_check{
+    display: block;
+}
+.nav_list_top{
+    padding: 60px 0 10px 10px;
+}
+.font_12rem{font-size: 1.2rem}
+.left_nav .nav_list_check{
+    width: 15px;
+    height: 15px;
+    position: absolute;
+    right: 12px;
+    top:50%;
+    margin-top: -12px;
+    color: #44cc00;
+    display: none;
+}
+.list .am-list > li > a{
+    color: #000000;
+}
+.list .am-list > li > a > i{
+    color: #0e90d2;
+}
+.list .am-list > li > a > i.am-icon-chevron-right{color: #ababab;}
+.list .nav_list_check{
+    width: 15px;
+    height: 15px;
+    position: absolute;
+    right: 5px;
+    top:50%;
+    margin-top: -12px;
+    color: #ababab;
+}
+.list .am-list-item-text{color: #b1b1b1; font-size: 1.4rem;padding-top: 0;}
+.list .am-list-item-text ul{padding-left: 0.5rem;margin-bottom: 0;margin-top: 0.5rem}
+.list .am-list-item-text ul li{line-height: 20px;text-align: left;}
+.am-offcanvas-bar{background: #fff;}
+.am-offcanvas-content{padding: 0;}
+
+.ios .nav_list_top{
+    padding: 80px 0 10px 10px;
+}

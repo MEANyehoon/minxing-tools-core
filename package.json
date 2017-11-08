@@ -1,0 +1,31 @@
+{
+  "name": "minxing-tools-core",
+  "version": "1.0.0",
+  "description": "Minxing 开发插件 核心依赖",
+  "main": "./lib/mx.api.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MEANyehoon/minxing-tools-core.git"
+  },
+  "keywords": [
+    "atom",
+    "vscode",
+    "minxing"
+  ],
+  "author": "yinhang",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/MEANyehoon/minxing-tools-core/issues"
+  },
+  "homepage": "https://github.com/MEANyehoon/minxing-tools-core#readme",
+  "dependencies": {
+    "fs-extra": "^0.30.0",
+    "glob": "^7.1.1",
+    "prompt": "^1.0.0",
+    "ws": "^1.1.1",
+    "archiver": "^2.1.0"
+  }
+}

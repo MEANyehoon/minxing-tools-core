@@ -1,0 +1,231 @@
+.content{
+  margin-top: 10px;
+}
+.content .person-info{
+  width: 93%;
+  height: 70px;
+  margin: 0 auto;
+  border-bottom: 1px solid #eeeeee;
+}
+.person-info img{
+  position: absolute;
+  left: 15px;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+.person-info .name{
+  position: absolute;
+  width: 100px;
+  left: 82px;
+  top:13px;
+  font-size: 1.7rem;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  text-align:left;
+}
+.person-info .info{
+  position: absolute;
+  left: 82px;
+  top: 40px;
+  font-size: 1.6rem;
+  color: #9098a2;
+}
+.audit-info{
+  width: 93%;
+  padding-top: 10px;
+  margin: 0 auto;
+}
+.audit-info li{
+  height: 20px;
+}
+.audit-info li .audit-name{
+  position: absolute;
+  left: 15px;
+  font-size: 1.4rem;
+  color: #9098a2;
+}
+.audit-info li .audit-content{
+  position: absolute;
+  left: 82px;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+.audit-info li img{
+  position: absolute;
+  width: 121px;
+  height: 121px;
+  left: 15px;
+  top: 192px;
+}
+.bottom{
+  position: relative;
+  margin-top: 20px;
+  width: 100%;
+  height: 400px;
+  background: #f0eff5;
+  text-align: center;
+}
+.bottom ul{
+  padding-top: 20px;
+}
+.bottom ul li{
+  height: 100px;
+  margin: 0 auto;
+  margin-bottom: 20px;
+}
+.bottom ul li .done{
+  position: absolute;
+  left: 27px;
+  top: 20px;
+  -webkit-transform: scale(0.8);
+  moz-transform: scale(0.8);
+  -ms-transform: scale(0.8);
+  -o-transform: scale(0.8);
+}
+.bottom ul li .details{
+  position: absolute;
+  display: block;
+  width: 70%;
+  height: 80px;
+  left: 80px;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  z-index: 100;
+}
+.bottom ul li .rotate{
+  position: absolute;
+  width:10px;
+  height:10px;
+  left: 75px;
+  top: 33px;
+  background: #fff;
+  -webkit-transform: rotate(45deg);
+  overflow: hidden;
+  z-index: 1;
+}
+.bottom ul li .details img{
+  position: absolute;
+  left: 15px;
+  top: 10px;
+  width: 58px;
+  height: 58px;
+  -webkit-transform: scale(0.8);
+  moz-transform: scale(0.8);
+  -ms-transform: scale(0.8);
+  -o-transform: scale(0.8);
+}
+.bottom ul li .details .name{
+  position: absolute;
+  width: 68px;
+  left: 50px;
+  top: 14px;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+.bottom ul li .details .info{
+  position: absolute;
+  width: 100px;
+  left: 53px;
+  top: 39px;
+  font-size: 1.3rem;
+  color: #75c813;
+}
+.bottom ul li .details .date{
+  position: absolute;
+  width: 90px;
+  right: 3px;
+  top: 5px;
+  font-size: 1rem;
+  color: #88919b;
+}
+.bottom ul li .wait{
+  position: absolute;
+  left: 27px;
+  top: 143px;
+  -webkit-transform: scale(0.8);
+  moz-transform: scale(0.8);
+  -ms-transform: scale(0.8);
+  -o-transform: scale(0.8);
+}
+.bottom ul li .rotate1{
+  position: absolute;
+  width:10px;
+  height:10px;
+  left: 75px;
+  top: 155px;
+  background: #fff;
+  -webkit-transform: rotate(45deg);
+  overflow: hidden;
+  z-index: 1;
+}
+footer a{
+  color: #1a85fe;
+  width: 33.3%;
+  height: 30px;
+  display: block;
+  float: left;
+  text-align: center;
+  line-height: 30px;
+  font-size: 1.4rem;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  border-right: 1px solid #d4d4d8;
+}
+footer input[type="submit"]{
+  border: 1px solid #e0e0e0; 
+  border-radius: 5px;
+  width: 44px;
+  height: 30px;
+  color: #1a85fe;
+  background: #fff;
+  float: left;
+  margin-left:7px; 
+  cursor: pointer;
+}
+.popup{
+  display: block;
+  width: 75%;
+  height: 30%;
+  margin: 0 auto;
+  border-radius: 5px;
+  background: #fff;
+  padding: 1rem 0.5rem 1.5rem;
+}
+.popup form{
+  border: 0;
+  width: 90%;
+  margin: 0 auto;
+}
+.popup label{
+  width: 100%;
+  padding-bottom: 1rem;
+}
+.popup textarea{
+  width: 99%;
+  height: 50%;
+  border: 1px solid #dbdbdb;
+  margin-bottom: 1rem;
+}
+.popup a{
+  float: right;
+  width: auto;
+  background: #fff;
+  border-radius: 5px;
+  padding: 0.5rem 0.75rem;
+  color: #1a85fe;
+  border: 1px solid #dbdbdb;
+  margin-left: 0.5rem; 
+  opacity: 1;
+}
+.foot img{
+  -webkit-transform: scale(0.5);
+  moz-transform: scale(0.5);
+  -ms-transform: scale(0.5);
+  -o-transform: scale(0.5);
+}
