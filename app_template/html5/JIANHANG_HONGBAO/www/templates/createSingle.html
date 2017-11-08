@@ -1,0 +1,74 @@
+<ion-view view-title="个人红包" hide-back-button="clear" class="background-16-EFEFEF">
+
+    <ion-nav-buttons side="left">
+
+        <button ng-if="!!!backView||!!clear" ng-click="MXWebUIBack();"
+                class="button back-button buttons  button-clear header-item">
+            <i class="icon"
+               ng-class="{'ion-android-arrow-back':$ionicPlatform.isAndroid(),'icon ion-ios-arrow-back':!$ionicPlatform.isAndroid()}">
+                <span>返回</span>
+            </i>
+        </button>
+
+    </ion-nav-buttons>
+
+    <ion-nav-buttons side="secondary">
+        <button ng-if="!backView||!!clear" class="button button-clear header-item" ui-sref="redPackage.history">
+            我的红包
+        </button>
+    </ion-nav-buttons>
+
+
+    <ion-content scrollbar-y="false" scrollbar-x="false" direction="y">
+
+
+        <div class="padding"></div>
+
+
+        <p class="text-center">
+            <span class="text-16-999999">准备发给 </span>
+            <span ng-bind="conversations.persons[0].name"></span>
+        </p>
+
+        <div class="list">
+            <label class="item item-input item-icon-right">
+                <span class="input-label input-label-small">积分</span>
+                <input class="text-right" style="padding-right: 48px;" ng-model="redPackageSingle.amount" type="number"
+                       placeholder="填写金额">
+                <i class="icon" style="font-size: 16px;">积分</i>
+            </label>
+        </div>
+
+        <div ng-if="redPackageSingle.amount&&redPackageSingle.amount.indexOf('.')>-1"
+             class="item item-divider item-borderless item-transparent">
+            <span class="assertive">请输入整数的积分</span>
+        </div>
+
+        <div class="list">
+            <label class="item item-input">
+                <textarea ng-model="redPackageSingle.blessings" placeholder="恭喜发财，万事如意！" rows="3"></textarea>
+            </label>
+        </div>
+
+        <div class="padding text-center">
+            <h1>
+                <span class="ion-social-usd-outline energized"></span>
+                <span class="text-stroke-dark" ng-bind="redPackageSingle.amount||0|currency:'':0"></span>
+            </h1>
+        </div>
+
+        <div class="padding">
+            <button ng-disabled="!redPackageSingle.amount||redPackageSingle.amount&&redPackageSingle.amount.indexOf('.')>-1"
+                    ng-click="sendRedPackage('SINGLE')"
+                    class="button button-block button-assertive ">
+                发红包
+            </button>
+        </div>
+
+        <p class="text-center text-16-999999 text-sm">72小时内未被领取，红包金额将自动退回</p>
+
+
+    </ion-content>
+
+    </ion-slide-box>
+</ion-view>

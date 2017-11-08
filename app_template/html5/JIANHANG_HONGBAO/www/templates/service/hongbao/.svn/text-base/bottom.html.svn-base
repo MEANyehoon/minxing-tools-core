@@ -1,0 +1,5 @@
+<ion-modal-view class="modal modal-full-screen" style="background-color: transparent;">
+
+    <div style="position: absolute;"></div>
+
+</ion-modal-view>

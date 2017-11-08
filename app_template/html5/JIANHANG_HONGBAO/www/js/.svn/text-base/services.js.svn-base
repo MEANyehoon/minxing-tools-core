@@ -1,0 +1,449 @@
+angular.module('starter.services', [])
+
+    .factory('CreateService', function () {
+
+        return {};
+    })
+
+    .factory('HistoryService', function () {
+
+        return {};
+    })
+
+    .factory('$transactionPassword', ['$rootScope', '$ionicModal', '$q',
+        function ($rootScope, $ionicModal, $q) {
+
+
+            return function (_option) {
+                var deferred = $q.defer();
+                var option = _option || {};
+                option.scope = (option.scope || $rootScope).$new();
+
+                var passwordUnits = [];
+                option.scope.__passwordUnitCount = 0;
+
+                option.scope.__closePasswordModal = function () {
+                    option.scope.transactionPasswordModal.hide();
+                    deferred.reject({data: passwordUnits.join(''), type: 'CLOSE'});
+                };
+
+                option.scope.__inputPassword = function (_value) {
+                    if (passwordUnits.length < 6) {
+                        passwordUnits.push(_value);
+                        option.scope.__passwordUnitCount = passwordUnits.length;
+                        deferred.notify({data: _value, type: "INPUT"});
+                        if (passwordUnits.length === 6) {
+                            option.scope.transactionPasswordModal.hide();
+                            deferred.resolve(passwordUnits.join(''));
+                        }
+                    }
+                };
+
+                option.scope.__deletePassword = function () {
+                    if (passwordUnits.length > 0) {
+                        var deleteValue = passwordUnits.pop();
+                        option.scope.__passwordUnitCount = passwordUnits.length;
+                        deferred.notify({data: deleteValue, type: 'DELETE'});
+                    }
+                };
+
+                $ionicModal.fromTemplateUrl('templates/service/transactionPasswordModal.html', {
+                    animation: "slide-in-up",
+                    scope: option.scope,
+                }).then(function (modal) {
+                    option.scope.transactionPasswordModal = modal;
+                    option.scope.transactionPasswordModal.show();
+
+                    option.scope.$on('$destroy', function () {
+                        option.scope.transactionPasswordModal.remove();
+                    });
+
+                });
+
+                return deferred.promise;
+            };
+
+        }])
+
+    .factory('$selectConversationUser', ['$rootScope', '$ionicModal', '$q',
+        function ($rootScope, $ionicModal, $q) {
+
+
+            function initViewPersons(persons, selectPersons) {
+
+                var initPersons = persons.map(function (person) {
+
+                    person.isChecked = false;
+                    if (selectPersons) {
+                        for (var i = 0, n = selectPersons.length; i < n; i++) {
+                            if (person.login_name == selectPersons[i].login_name) {
+                                person.isChecked = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    return person;
+                });
+
+                return initPersons;
+
+            };
+
+
+            return function (_option) {
+
+                var deferred = $q.defer();
+
+                var option = _option || {};
+
+                option.scope = (option.scope || $rootScope).$new();
+                option.scope.selectPersons = _option.selectPersons || [];
+                option.scope.persons = initViewPersons(_option.persons || [], _option.selectPersons || []);
+                option.scope.isSingle = _option.isSingle || false;
+                option.scope.cssClass = _option.cssClass || 'assertive';
+
+                $ionicModal.fromTemplateUrl('templates/service/selectConversationUserModal.html', {
+                    animation: "slide-in-right",
+                    scope: option.scope,
+                }).then(function (modal) {
+                    option.scope.modal = modal;
+                    option.scope.modal.show();
+
+                    option.scope.$on('$destroy', function () {
+                        option.scope.modal.remove();
+                    });
+
+                    option.scope.closeModal = function () {
+                        option.scope.modal.hide();
+                    };
+
+                    option.scope.confirm = function () {
+                        deferred.resolve(option.scope.selectPersons);
+                        option.scope.closeModal();
+                    };
+
+                    option.scope.change = function (person) {
+
+                        if (option.scope.isSingle) {
+                            initViewPersons(option.scope.persons);
+                            person.isChecked = true;
+                        }
+
+                        option.scope.selectPersons = option.scope.persons.filter(function (person) {
+                            return person.isChecked;
+                        });
+                    }
+
+                });
+
+                return deferred.promise;
+            };
+
+        }])
+
+    .factory("RestfulResourcesAddressService", ['RestfulResourceAddress', 'RestfulResources',
+        function (RestfulResourceAddress, RestfulResources) {
+
+            var restfulResourceAddress = RestfulResourceAddress;
+
+            return {
+                setRestfulResourceAddress: function (address) {
+                    restfulResourceAddress = address;
+                },
+                getRestfulResourceAddress: function () {
+                    return restfulResourceAddress;
+                }
+            };
+
+        }])
+
+    .factory("$HttpResource", ['$q', '$timeout', '$http', '$httpParamSerializerJQLike', '$ionicLoading', 'MXAPP',
+        function ($q, $timeout, $http, $httpParamSerializerJQLike, $ionicLoading, MXAPP) {
+
+            function httpResource(type, url, params, isShowLoading) {
+
+                var defered = $q.defer();
+
+                if (null == isShowLoading) {
+                    isShowLoading = true;
+                }
+
+                isShowLoading = isShowLoading && true;
+
+                if (isShowLoading) {
+                    $ionicLoading.show({
+                        template: '<ion-spinner class="spinner-panda"></ion-spinner><div class="text-center"><span>正在加载</span></div>',
+                        duration: 60000
+                    });
+                }
+
+
+                try {
+
+                    document.addEventListener("deviceready", function () {
+                        MXCommon.getSSOToken(MXAPP.ID, function (ssoToken) {
+
+                                $http.defaults.headers.common.Authorization = 'bearer.minxing ' + ssoToken;
+
+                                $http({
+                                    url: url,
+                                    method: type,
+                                    data: $httpParamSerializerJQLike(params),
+                                    headers: {
+                                        'Content-Type': 'application/x-www-form-urlencoded'
+                                    }
+                                }).success(function (data) {
+                                    $timeout(function () {
+                                        if (data && data.code == '00') {
+                                            defered.resolve(data.context);
+                                        } else {
+                                            defered.reject(data.message);
+                                        }
+                                    });
+                                }).error(function (error) {
+                                    $timeout(function () {
+                                        defered.reject(error);
+                                    });
+                                }).finally(function () {
+                                    $timeout(function () {
+                                        if (isShowLoading) {
+                                            $ionicLoading.hide();
+                                        }
+                                    });
+                                });
+
+                            }
+                        );
+                    }, false);
+
+                } catch (error) {
+                    alert("无法获取SSO_TOKEN");
+                }
+
+                return defered.promise;
+            }
+
+            return {
+                get: function (url, data, isShowLoading) {
+                    return httpResource("GET", url, data, isShowLoading);
+                },
+                post: function (url, data, isShowLoading) {
+                    return httpResource("POST", url, data, isShowLoading);
+                },
+                httpResource: httpResource
+            };
+
+        }])
+
+    .factory("UserInteractiveService", ['$ionicPopup', '$ionicLoading', '$q',
+        function ($ionicPopup, $ionicLoading, $q) {
+
+
+            function toast(message) {
+                return ionicPopupAlert({template: message});
+            }
+
+            function ionicPopupAlert(parameters) {
+
+                var option = {
+                    title: "提示信息",
+                    template: "",
+                    okText: '知道了',
+                    okType: 'button-assertive'
+                };
+
+                option = angular.extend({}, option, parameters);
+
+                return $ionicPopup.alert(option);
+            }
+
+            function ionicLoadingShow(message) {
+                var loadingConfig = {
+                    duration: 60000,
+                    template: '<ion-spinner class="spinner-panda"></ion-spinner><div class="text-center"><span>' + message || '正在加载' + '</span></div>'
+                };
+
+                return $ionicLoading.show(loadingConfig);
+            }
+
+            function ionicLoadingHide() {
+                $ionicLoading.hide();
+            }
+
+            function confirmPopup(parameters) {
+
+                var deferred = $q.defer();
+
+                var option = {
+                    title: '确认提醒',
+                    template: '您确定此操作么？',
+                    cancelText: '取消',
+                    cancelType: 'button-assertive button-outline',
+                    okText: '确定',
+                    okType: 'button-assertive'
+                };
+
+                option = angular.extend({}, option, parameters);
+
+                $ionicPopup.confirm(option)
+                    .then(function (res) {
+                        if (res) {
+                            deferred.resolve();
+                        } else {
+                            deferred.reject();
+                        }
+                    });
+
+                return deferred.promise;
+
+            }
+
+            return {
+                toast: toast,
+                alert: ionicPopupAlert,
+                loading: {
+                    show: ionicLoadingShow,
+                    hide: ionicLoadingHide
+                },
+                confirm: confirmPopup
+            }
+
+        }])
+
+    .factory("MXCommonService", ['$q', function ($q) {
+
+        var currentUser = null;
+        var serverUrl = null;
+
+        function getCurrentUser() {
+
+            var deferred = $q.defer();
+
+            try {
+                if (currentUser) {
+                    console.log("----------------------");
+                    console.log(currentUser);
+                    console.log("----------------------");
+                    deferred.resolve(currentUser);
+                } else {
+                    document.addEventListener("deviceready", function () {
+                        MXCommon.getCurrentUser(
+                            function (result) {
+                                console.log("----------------------");
+                                console.log(result);
+                                console.log("----------------------");
+                                currentUser = result;
+                                deferred.resolve(currentUser);
+                            }, function () {
+                                deferred.reject();
+                            }
+                        );
+                    });
+                }
+            } catch (e) {
+                deferred.resolve("zhaojunming");
+            }
+
+            return deferred.promise;
+
+        }
+
+        function shareToChatAuto(_options) {
+
+            var options = angular.extend({}, {
+                'title': '', //分享标题
+                'image_url': '', //缩略图url
+                'url': '', //分享url
+                'app_url': '', //app_url,原生的页面。如果是分享的html页面，该字段设置为空
+                'description': '', //分享描述
+                'source_id': '', //资源id,比如应用商店中的应用的id,或者公众号的id
+                'source_type': '', // 值为ocu或app，资源类型
+                'conversation_id': '' // 群聊的conversation_id
+            }, _options);
+
+            var deferred = $q.defer();
+
+            try {
+                document.addEventListener("deviceready", function () {
+                    MXShare.shareToChatAuto(options
+                        , function () {
+                            deferred.resolve();
+                        }, function () {
+                            deferred.reject();
+                        }
+                    );
+                });
+            } catch (error) {
+                deferred.reject();
+            }
+
+            return deferred.promise;
+        }
+
+        function getConversationByID(conversation_id) {
+
+            var deferred = $q.defer();
+
+            try {
+                document.addEventListener("deviceready", function () {
+                    MXChat.getConversationByID(conversation_id,
+                        function (result) {
+                            console.log("----------------------");
+                            console.log(typeof result);
+                            console.log(result);
+                            console.log("----------------------");
+                            deferred.resolve(JSON.parse(result));
+                        }, function (error) {
+                            deferred.reject("获取当前聊天人错误" + JSON.stringify(error));
+                        });
+                }, false);
+            } catch (e) {
+                deferred.reject(e.name + ":" + e.message);
+            }
+
+            return deferred.promise;
+        }
+
+
+        function getServerUrl() {
+
+            var deferred = $q.defer();
+
+            try {
+                if (serverUrl) {
+                    deferred.resolve(serverUrl);
+                } else {
+                    document.addEventListener("deviceready", function () {
+
+                        MXCommon.getServerUrl(
+                            function (url) {
+                                serverUrl = url;
+                                deferred.resolve(serverUrl);
+                            }, function () {
+                                deferred.reject();
+                            }
+                        );
+                    });
+                }
+            } catch (e) {
+                deferred.resolve("http://im.zsmarter.com");
+            }
+
+            return deferred.promise;
+        }
+
+        return {
+            MXCommon: {
+                getCurrentUser: getCurrentUser,
+                getServerUrl: getServerUrl
+            },
+            MXShare: {
+                shareToChatAuto: shareToChatAuto
+            },
+            MXChat: {
+                getConversationByID: getConversationByID
+            }
+        }
+
+    }]);

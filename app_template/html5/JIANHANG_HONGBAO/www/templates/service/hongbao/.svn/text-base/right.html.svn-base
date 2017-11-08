@@ -1,0 +1,17 @@
+<ion-modal-view class="modal modal-full-screen" style="background-color: transparent;">
+
+    <div style="position: absolute;left: 50%;top: 0;bottom: 0;right: 0;border:1rem double rgba(0,0,0,0.1)"
+         class="assertive-bg">
+
+    </div>
+
+    <div style="position: absolute;left: 0;right: 0;top: 40%;height: auto;width: 100%;" align="center">
+
+        <a ng-click="kaiHongbao();hideButton=true;" ng-hide="hideButton" class="item item-energized"
+           style="border:.5rem double rgba(3,0,0,.05);width: 8rem;height: 8rem;padding: 0;-webkit-border-radius: 50%;-moz-border-radius: 50%;border-radius: 50%;">
+            <span class="dark" style="line-height: 7rem;font-size: 5rem;">開</span>
+        </a>
+
+    </div>
+
+</ion-modal-view>

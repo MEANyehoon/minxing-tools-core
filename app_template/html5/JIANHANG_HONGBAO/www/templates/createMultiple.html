@@ -1,0 +1,222 @@
+<ion-view view-title="群组红包" hide-back-button="clear" class="background-16-EFEFEF">
+
+    <ion-nav-buttons side="left">
+
+        <button ng-if="!!!backView||!!clear" ng-click="closeWindow();"
+                class="button back-button buttons  button-clear header-item">
+            <i class="icon"
+               ng-class="{'ion-android-arrow-back':$ionicPlatform.isAndroid(),'icon ion-ios-arrow-back':!$ionicPlatform.isAndroid()}">
+                <span>返回</span>
+            </i>
+        </button>
+
+    </ion-nav-buttons>
+
+    <ion-nav-buttons side="secondary">
+        <button ng-if="!backView||!!clear" class="button button-clear header-item" ui-sref="redPackage.history">
+            我的红包
+        </button>
+    </ion-nav-buttons>
+
+    <div class="tabs-striped tabs-top tabs-background-light tabs-color-assertive">
+        <div class="tabs" style="border:0;">
+            <a class="tab-item" ng-class="{'active':0==tabsFlag}" ng-click="tabsFlag=0">
+                手气红包
+            </a>
+            <a class="tab-item" ng-class="{'active':1==tabsFlag}" ng-click="tabsFlag=1">
+              普通红包
+            </a>
+            <!--<a ng-if="false" class="tab-item" ng-class="{'active':2==tabsFlag}" ng-click="tabsFlag=2">-->
+                <!--企业红包-->
+            <!--</a>-->
+        </div>
+    </div>
+
+    <ion-slide-box class="grey-view" show-pager="false" on-slide-changed="tabsSlideChanged($index)"
+                   >
+        <ion-slide style="height: 100vh;">
+            <ion-content class="has-subheader" scrollbar-y="false" scrollbar-x="false" direction="y">
+
+                <div class="padding"></div>
+
+
+                <p class="text-center">
+                    <span class="text-16-999999 text-sm">拼手气红包，抢到的金额随机不等</span>
+                </p>
+
+                <div class="list">
+                    <label class="item item-input item-icon-right">
+                        <span class="input-label input-label-small">红包个数</span>
+                        <input class="text-right" style="padding-right: 36px;" ng-model="redPackage.GROUP.totalCount"
+                               type="number"
+                               placeholder="填写个数">
+                        <i class="icon" style="font-size: 16px;">个</i>
+                    </label>
+                    <div class="item item-divider item-borderless item-transparent">
+                        <span class="text-16-666666">本群共<i ng-bind="conversations.persons.length"></i>人</span>
+                        <span class="assertive padding-left"
+                              ng-if="redPackage.GROUP.totalCount>conversations.persons.length">红包个数不能大于群人数</span>
+                    </div>
+
+                    <label class="item item-input item-icon-right">
+                        <span class="input-label input-label-small">总积分</span>
+                        <input class="text-right" style="padding-right: 48px;" ng-model="redPackage.GROUP.amount"
+                               type="number"
+                               placeholder="填写金额">
+                        <i class="icon" style="font-size: 16px;">积分</i>
+                    </label>
+
+                    <div ng-if="redPackage.GROUP.amount&&redPackage.GROUP.amount.indexOf('.')>-1"
+                         class="item item-divider item-borderless item-transparent">
+                        <span class="assertive">请输入整数的积分</span>
+                    </div>
+
+                </div>
+
+                <div class="list">
+                    <label class="item item-input">
+                        <textarea ng-model="redPackage.GROUP.blessings" placeholder="恭喜发财，万事如意！" rows="3"></textarea>
+                    </label>
+                </div>
+
+
+                <h1 class="text-center">
+                    <span class="ion-social-usd-outline energized"></span>
+                    <span class="text-stroke-dark" ng-bind="redPackage.GROUP.amount||0 |currency:'':0"></span>
+                </h1>
+
+                <div class="padding">
+                    <button ng-disabled="!redPackage.GROUP.amount||!redPackage.GROUP.totalCount||redPackage.GROUP.totalCount>conversations.persons.length||redPackage.GROUP.amount&&redPackage.GROUP.amount.indexOf('.')>-1"
+                            ng-click="sendRedPackage('GROUP_RANDOM');"
+                            class="button button-block button-assertive  ">发红包
+                    </button>
+                </div>
+
+                <p class="text-center text-16-999999 text-sm">72小时内未被领取，红包金额将自动退回</p>
+
+
+            </ion-content>
+        </ion-slide>
+        <ion-slide style="height: 100vh;">
+            <ion-content class="has-subheader" scrollbar-y="false" scrollbar-x="false" direction="y">
+
+                <div class="padding"></div>
+
+                <p class="text-center">
+                    <span class="text-16-999999 text-sm">普通红包，抢到的金额相等</span>
+                </p>
+
+                <div class="list">
+                    <label class="item item-input item-icon-right">
+                        <span class="input-label input-label-small">红包个数</span>
+                        <input class="text-right" style="padding-right: 36px;" ng-model="redPackage.GROUP.totalCount"
+                               type="number"
+                               placeholder="填写个数">
+                        <i class="icon" style="font-size: 16px;">个</i>
+                    </label>
+                    <div class="item item-divider item-borderless item-transparent">
+                        <span class="text-16-666666">本群共<i ng-bind="conversations.persons.length"></i>人</span>
+                        <span class="assertive padding-left"
+                              ng-if="redPackage.GROUP.totalCount>conversations.persons.length">红包个数不能大于群人数</span>
+                    </div>
+
+                    <label class="item item-input item-icon-right">
+                        <span class="input-label input-label-small">单个积分</span>
+                        <input class="text-right" style="padding-right: 48px;" ng-model="redPackage.GROUP.amount"
+                               type="number"
+                               placeholder="填写金额">
+                        <i class="icon" style="font-size: 16px;">积分</i>
+                    </label>
+
+                    <div ng-if="redPackage.GROUP.amount&&redPackage.GROUP.amount.indexOf('.')>-1"
+                         class="item item-divider item-borderless item-transparent">
+                        <span class="assertive">请输入整数的积分</span>
+                    </div>
+
+                </div>
+
+                <div class="list">
+                    <label class="item item-input">
+                        <textarea ng-model="redPackage.GROUP.blessings" placeholder="恭喜发财，万事如意！" rows="3"></textarea>
+                    </label>
+                </div>
+
+
+                <h1 class="text-center">
+                    <span class="ion-social-usd-outline energized"></span>
+                    <span class="text-stroke-dark" ng-bind="((redPackage.GROUP.amount||0) * redPackage.GROUP.totalCount) |currency:'':0"></span>
+                </h1>
+
+                <div class="padding">
+                    <button ng-disabled="!redPackage.GROUP.amount||!redPackage.GROUP.totalCount||redPackage.GROUP.totalCount>conversations.persons.length||redPackage.GROUP.amount&&redPackage.GROUP.amount.indexOf('.')>-1"
+                            ng-click="sendRedPackage('GROUP_AVG');"
+                            class="button button-block button-assertive  ">发红包
+                    </button>
+                </div>
+
+                <p class="text-center text-16-999999 text-sm">72小时内未被领取，红包金额将自动退回</p>
+
+
+            </ion-content>
+        </ion-slide>
+        <!--<ion-slide ng-if="false" style="height: 100vh;">-->
+            <!--<ion-content class="has-subheader" scrollbar-y="false" scrollbar-x="false" direction="y">-->
+                <!--<div class="padding"></div>-->
+
+
+                <!--<p class="text-center">-->
+                    <!--<span class="text-16-999999 text-sm">企业红包，给指定的人奖励</span>-->
+                <!--</p>-->
+
+                <!--<div class="list">-->
+
+                    <!--<a class="item item-icon-right" ng-click="selectConversationUser();">-->
+
+                        <!--接收人-->
+
+                        <!--<span class="badge badge-assertive" ng-bind="selectPersons.length"></span>-->
+
+                        <!--<i class="icon ion-chevron-right icon-accessory"></i>-->
+
+                    <!--</a>-->
+
+                    <!--<div class="item item-divider item-borderless item-transparent">-->
+                        <!--<span class="text-16-666666">本群共<i ng-bind="conversations.persons.length"></i>人</span>-->
+                    <!--</div>-->
+
+                    <!--<label class="item item-input item-icon-right">-->
+                        <!--<span class="input-label input-label-small">单个金额</span>-->
+                        <!--<input class="text-right" style="padding-right: 36px;" ng-model="redPackage.ENTERPRIES.amount"-->
+                               <!--type="text"-->
+                               <!--placeholder="填写金额">-->
+                        <!--<i class="icon" style="font-size: 16px;">元</i>-->
+                    <!--</label>-->
+                <!--</div>-->
+
+                <!--<div class="list">-->
+                    <!--<label class="item item-input">-->
+                        <!--<textarea ng-model="redPackage.ENTERPRIES.blessings" placeholder="工作优秀，特此嘉奖！"-->
+                                  <!--rows="3"></textarea>-->
+                    <!--</label>-->
+                <!--</div>-->
+
+
+                <!--<h1 class="text-center">-->
+                    <!--<span class="ion-social-yen"></span>-->
+                    <!--<span class="text-stroke-dark"-->
+                          <!--ng-bind="(redPackage.ENTERPRIES.amount||0)*selectPersons.length|currency:''"></span>-->
+                <!--</h1>-->
+
+                <!--<div class="padding">-->
+                    <!--<button ng-disabled="!redPackage.ENTERPRIES.amount||!selectPersons||selectPersons.length==0"-->
+                            <!--ng-click="sendRedPackage('ENTERPRIES');"-->
+                            <!--class="button button-block button-assertive  ">发红包-->
+                    <!--</button>-->
+                <!--</div>-->
+
+                <!--<p class="text-center text-16-999999 text-sm">72小时内未被领取，红包金额将自动退回</p>-->
+
+            <!--</ion-content>-->
+        <!--</ion-slide>-->
+    </ion-slide-box>
+</ion-view>

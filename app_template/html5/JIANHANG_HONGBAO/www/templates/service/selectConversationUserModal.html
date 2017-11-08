@@ -1,0 +1,45 @@
+<ion-modal-view class="modal modal-full-screen background-16-EFEFEF">
+
+    <ion-header-bar class="bar bar-{{cssClass}}">
+        <button class="button button-clear" ng-click="closeModal(); "
+                style="margin-top: {{$ionicPlatform.isAndroid()?0:19}}px">取消
+        </button>
+        <h1 class="title">选择人员（<span ng-bind="selectPersons.length"></span><span ng-if="isSingle">/1</span><span
+                ng-if="!isSingle">/<i ng-bind="persons.length"></i></span>）
+        </h1>
+        <button class="button button-clear" ng-click="confirm();"
+                style="margin-top: {{$ionicPlatform.isAndroid()?0:19}}px">确定
+        </button>
+    </ion-header-bar>
+
+    <div class="bar bar-stable bar-subheader"
+         style="padding: 0;height: 44px;top:{{$ionicPlatform.isAndroid()?44:66}}px">
+        <ion-scroll paging="false" has-bouncing="false" zooming="true" scrollbar-x="false" scrollbar-y="false"
+                    direction="x" style="min-width: 100%;">
+
+            <div style="width: {{44*selectPersons.length}}px">
+                <img ng-repeat="person in selectPersons" style="width: 44px;height: 44px;padding: 5px;"
+                     ng-src="{{person.avatar_url}}">
+            </div>
+
+
+        </ion-scroll>
+
+    </div>
+
+    <ion-content class="has-subheader" style="top:{{$ionicPlatform.isAndroid()?88:109}}px;margin-top: 0;">
+
+        <ion-checkbox class="checkbox-assertive" ng-repeat="person in persons" ng-model="person.isChecked"
+                      ng-checked="person.isChecked" ng-change="change(person);">
+
+            <h2 class="text-left" ng-bind="person.name"></h2>
+
+            <img class="img-rounded" style="width: 40px;height: 40px;position: absolute;right: 16px;top: 6px;"
+                 ng-src="{{person.avatar_url}}">
+
+        </ion-checkbox>
+
+    </ion-content>
+
+
+</ion-modal-view>

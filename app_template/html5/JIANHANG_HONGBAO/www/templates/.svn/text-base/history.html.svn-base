@@ -1,0 +1,184 @@
+<ion-view view-title="我的红包" hide-back-button="clear">
+
+    <ion-nav-buttons side="left">
+
+        <button ng-if="!backView||clear" ng-click="closeWindow();"
+                class="button back-button buttons  button-clear header-item">
+            <i class="icon"
+               ng-class="{'ion-android-arrow-back':$ionicPlatform.isAndroid(),'icon ion-ios-arrow-back':!$ionicPlatform.isAndroid()}">
+                <span>返回</span>
+            </i>
+        </button>
+
+    </ion-nav-buttons>
+
+    <ion-slide-box class="assertive-bg" style="height: 206px;top: 44px;position: absolute;left: 0;right: 0;"
+                   show-pager="false" on-slide-changed="tabsSlideChanged($index)">
+        <ion-slide style="height: auto;">
+
+
+            <div class="text-center light padding-vertical" style="margin-top: 100px;">
+                收到<span ng-bind="receiveRedPackageList.length"></span>个红包
+            </div>
+            <div class="text-center padding-vertical energized">
+                <span>共</span>
+                <span style="font-size: 2.5rem;" ng-bind="receiveRedPackageAmount|currency:''"></span>
+                <span>积分</span>
+            </div>
+
+        </ion-slide>
+        <ion-slide style="height: auto">
+
+            <div class="text-center light padding-vertical" style="margin-top: 100px;">
+                发出<span ng-bind="sendRedPackageList.length"></span>个红包
+            </div>
+            <div class="text-center padding-vertical energized">
+                <span>共</span>
+                <span style="font-size: 2.5rem;" ng-bind="sendRedPackageAmount|currency:''"></span>
+                <span>积分</span>
+            </div>
+        </ion-slide>
+    </ion-slide-box>
+
+    <div ng-if="$ionicPlatform.isAndroid()" class="text-center"
+         style="position: absolute;left: 0;right: 0;top: 44px;pointer-events: none;">
+        <img class="img-circle" style="height: 100px;width: 100px;border:.3rem solid rgba(0,0,0,.1)"
+             ng-src="{{currentUser.avatar_url}}">
+    </div>
+
+    <div ng-if="!$ionicPlatform.isAndroid()" class="text-center"
+         style="position: absolute;left: 0;right: 0;top: 66px;pointer-events: none;">
+        <img class="img-circle" style="height: 80px;width: 80px;border:.3rem solid rgba(0,0,0,.1)"
+             ng-src="{{currentUser.avatar_url}}">
+    </div>
+
+    <div class="tabs-striped tabs-top tabs-background-light tabs-color-assertive">
+        <div class="tabs" style="border:0;top:250px;">
+            <a class="tab-item active" ng-class="{'active':0==tabsFlag}" ng-click="tabsFlag=0">
+                我收到的
+            </a>
+            <a class="tab-item" ng-class="{'active':1==tabsFlag}" ng-click="tabsFlag=1">
+                我发出的
+            </a>
+        </div>
+    </div>
+
+    <ion-slide-box style="position: absolute;left: 0;right: 0; bottom: 0;top: 300px;" class="background-16-EFEFEF"
+                   show-pager="false" on-slide-changed="tabsSlideChanged($index)">
+        <ion-slide>
+
+            <ion-content style="top: 0;margin-top: 0;">
+
+                <ion-refresher ng-if="!!!isShowLoadingOfReceiveRedPackage" pulling-text="<i>下拉刷新列表</i>"
+                               pulling-icon="ion-android-more-horizontal assertive"
+                               on-refresh="doRefreshReceiveRedPackageList();"></ion-refresher>
+
+
+                <div ng-show="isShowLoadingOfReceiveRedPackage" class="text-center">
+                    <div class="padding"></div>
+                    <ion-spinner class="spinner-panda"></ion-spinner>
+                </div>
+
+                <div ng-show="!!!isShowLoadingOfReceiveRedPackage&&(null==receiveRedPackageList||receiveRedPackageList.length==0)"
+                     class="text-center">
+                    <div class="padding"></div>
+                    <p class="text-center">没有查询到记录</p>
+                </div>
+
+                <div class="list">
+
+                    <a class="item item-avatar" ng-repeat="receiveRedPackageItem in receiveRedPackageList"
+                       ui-sref="redPackage.receive({hongbaoId:receiveRedPackageItem.hongbaoId,sendPersonId:receiveRedPackageItem.createUserId})">
+                        <img ng-src="{{receiveRedPackageItem.avatar_url}}">
+                        <h2>
+                            <div class="row row-no-padding row-stretch">
+                                <div class="col col-34">
+                                    <span ng-if="receiveRedPackageItem.receiverType=='0'">手气红包</span>
+                                    <span ng-if="receiveRedPackageItem.receiverType=='1'">个人红包</span>
+                                    <span ng-if="receiveRedPackageItem.receiverType=='2'">企业红包</span>
+                                </div>
+                                <div class="col col-66 text-right">
+                                    <span ng-bind="receiveRedPackageItem.amount|currency:''"></span>积分
+                                </div>
+                            </div>
+                        </h2>
+                        <div class="row row-no-padding row-stretch">
+                            <div class="col col-66">
+                                <p class="item-text-wrap">
+                                    <span>来自</span>
+                                    <span class="dark" ng-bind="receiveRedPackageItem.createUserAccount"></span>
+                                    <span ng-bind="receiveRedPackageItem.grabTime"></span>
+                                </p>
+                            </div>
+                            <div class="col col-34 text-right">
+                                <p ng-if="receiveRedPackageItem.status=='0'"><span class="assertive">未领取</span></p>
+                                <p ng-if="receiveRedPackageItem.status=='1'">已领取</p>
+                            </div>
+                        </div>
+                    </a>
+
+                </div>
+
+
+            </ion-content>
+
+        </ion-slide>
+        <ion-slide>
+
+            <ion-content style="top: 0;margin-top: 0;">
+
+                <ion-refresher ng-if="!!!isShowLoadingOfSendRedPackage" pulling-text="<i>下拉刷新列表</i>"
+                               pulling-icon="ion-android-more-horizontal assertive"
+                               on-refresh="doRefreshSendRedPackageList();"></ion-refresher>
+
+
+                <div ng-show="isShowLoadingOfSendRedPackage" class="text-center">
+                    <div class="padding"></div>
+                    <ion-spinner class="spinner-panda"></ion-spinner>
+                </div>
+
+                <div ng-show="!!!isShowLoadingOfSendRedPackage&&(null==sendRedPackageList||sendRedPackageList.length==0)"
+                     class="text-center">
+                    <div class="padding"></div>
+                    <p class="text-center">没有查询到记录</p>
+                </div>
+
+                <div class="list">
+                    <a class="item item-avatar" ng-repeat="sendRedPackageItem in sendRedPackageList"
+                       ui-sref="redPackage.send({hongbaoId:sendRedPackageItem.oid})">
+                        <img src="img/hongbao/hb-icon.png" class="img-square">
+                        <h2>
+                            <div class="row row-no-padding row-stretch">
+                                <div class="col col-34">
+                                    <span ng-if="sendRedPackageItem.receiverType=='0'">手气红包</span>
+                                    <span ng-if="sendRedPackageItem.receiverType=='1'">个人红包</span>
+                                    <span ng-if="sendRedPackageItem.receiverType=='2'">企业红包</span>
+                                </div>
+                                <div class="col col-66 text-right">
+                                    <span ng-bind="sendRedPackageItem.amount|currency:''"></span>积分
+                                </div>
+                            </div>
+                        </h2>
+                        <div class="row row-no-padding row-stretch">
+                            <div class="col col-66">
+                                <p class="item-text-wrap">
+                                    <span>发给</span>
+                                    <span class="dark" ng-bind="sendRedPackageItem.receiverId"></span>
+                                    <span ng-bind="sendRedPackageItem.createTime"></span>
+                                </p>
+                            </div>
+                            <div class="col col-34 text-right">
+                                <p ng-if="sendRedPackageItem.status=='0'"><span class="assertive">未领完</span></p>
+                                <p ng-if="sendRedPackageItem.status=='1'">已领完</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+
+            </ion-content>
+
+        </ion-slide>
+    </ion-slide-box>
+
+</ion-view>

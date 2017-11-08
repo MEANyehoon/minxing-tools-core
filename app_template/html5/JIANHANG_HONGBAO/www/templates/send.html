@@ -1,0 +1,93 @@
+<ion-view view-title="红包明细" hide-back-button="clear" class="background-16-EFEFEF">
+
+    <ion-nav-buttons side="left">
+
+        <button ng-if="!backView||clear" ng-click="MXWebUIBack();"
+                class="button back-button buttons  button-clear header-item">
+            <i class="icon"
+               ng-class="{'ion-android-arrow-back':$ionicPlatform.isAndroid(),'icon ion-ios-arrow-back':!$ionicPlatform.isAndroid()}">
+                <span>返回</span>
+            </i>
+        </button>
+
+    </ion-nav-buttons>
+
+    <ion-nav-buttons side="secondary">
+        <button ng-if="!backView" class="button button-clear header-item" ui-sref="redPackage.history">
+            我的红包
+        </button>
+    </ion-nav-buttons>
+
+    <ion-content scrollbar-y="false" scrollbar-x="false" direction="y">
+
+        <div class="assertive-bg padding-bottom">
+            <div class="padding-top"></div>
+            <div class="text-center">
+                <img style="height: 80px;width:80px;border:.2rem solid rgba(0,0,0,.1)" class="img-rounded"
+                     ng-src="{{hongbao.payChecksSend.avatar_url}}">
+                <p class="text-center" ng-bind="hongbao.payChecksSend.userId"></p>
+            </div>
+
+            <div class="text-center">
+                <p class="light" style="font-size: 16px;padding-right: 10px;padding-left: 10px;">
+                    <span>发给<i ng-bind="hongbao.payChecksSend.totalCount"></i>位朋友的</span>
+                    <span ng-if="hongbao.payChecksSend.receiverType=='0'">手气红包</span>
+                    <span ng-if="hongbao.payChecksSend.receiverType=='1'">个人红包</span>
+                    <span ng-if="hongbao.payChecksSend.receiverType=='2'">企业红包</span>
+                </p>
+
+                <p class="text-nm" ng-bind="hongbao.payChecksSend.blessings"
+                   style="color: #ddd;color: rgba(255,255,255,.6)"></p>
+                <p class="light" style="font-size: 16px;padding-right: 10px;padding-left: 10px;">
+                  <span>共</span>
+                  <span ng-bind="hongbao.payChecksSend.amount|currency:'':0"></span>积分
+                </p>
+
+            <!--<span class="text-sm" style="color: #ddd;color: rgba(0,0,0,.3)">红包编码：<i-->
+                    <!--ng-bind="hongbao.payChecksSend.oid"></i></span>-->
+
+            </div>
+        </div>
+        <div class="list list-borderless light-bg">
+
+            <div class="item item-divider item-light">
+                <span ng-bind="lingQuHongbaoCount"></span>人领取
+            </div>
+
+            <div ng-repeat="payGrab in hongbao.payGrabs" ng-if="payGrab.userInfoId">
+                <div class="line-top line-stable" style="margin: 1px 0;"></div>
+
+                <div class="item item-avatar-left item-light">
+                    <img ng-src="{{payGrab.avatar_url}}">
+                    <h2>
+                        <div class="row row-no-padding row-stretch">
+                            <div class="col col-34">
+                                <span ng-bind="payGrab.userInfoId"></span>
+                            </div>
+                            <div class="col col-66 text-right">
+                                <span ng-bind="payGrab.amount|currency:'':0"></span>积分
+                            </div>
+                        </div>
+                    </h2>
+                    <div class="row row-stretch row-no-padding">
+                        <div class="col col-67">
+                            <p ng-bind="payGrab.grabTime"></p>
+                        </div>
+                        <div class="col col-33">
+                            <p class="text-right">
+                                <span ng-if="payGrab.status=='0'" class="assertive">未领取</span>
+                                <span ng-if="payGrab.status=='1'">已领取</span>
+                            </p>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+        </div>
+
+    </ion-content>
+
+    </ion-slide-box>
+</ion-view>

@@ -1,0 +1,48 @@
+<ion-view view-title="发红包" class="assertive-bg" hide-back-button="true">
+
+    <ion-nav-buttons side="left">
+
+        <button ng-click="closeWindow();"
+                class="button back-button buttons  button-clear header-item">
+            <i class="icon"
+               ng-class="{'ion-android-arrow-back':$ionicPlatform.isAndroid(),'icon ion-ios-arrow-back':!$ionicPlatform.isAndroid()}">
+                <span>返回</span>
+            </i>
+        </button>
+
+    </ion-nav-buttons>
+
+    <ion-nav-buttons side="secondary">
+        <button class="button button-clear" ui-sref="redPackage.history">
+            我的红包
+        </button>
+    </ion-nav-buttons>
+
+    <ion-content scrollbar-y="false" scrollbar-x="false" direction="y" scroll="false">
+
+        <img style="width: 100%" src="img/hb-bg1.png">
+
+
+        <div ng-if="!!!conversation_id" class="padding">
+
+            <a class="button button-block button-energized" ui-sref="redPackage.createSingle({personId:'xiaoming'})">
+                <span class="assertive">个人红包</span>
+            </a>
+
+            <a class="button button-block button-energized" ui-sref="redPackage.createMultiple">
+                <span class="assertive">群组红包</span>
+            </a>
+
+        </div>
+
+        <div class="text-center" style="">
+            <span style="font-size: 2rem;-weblit-writing-mode:tb;writing-mode:tb;color: rgba(0,0,0,.1);border: 0.5rem double rgba(0,0,0,.05);padding: 1rem;">
+                敏行红包
+            </span>
+        </div>
+
+
+    </ion-content>
+
+    </ion-slide-box>
+</ion-view>

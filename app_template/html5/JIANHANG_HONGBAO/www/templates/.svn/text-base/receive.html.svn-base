@@ -1,0 +1,53 @@
+<ion-view view-title="收到的红包" hide-back-button="clear" class="assertive-bg">
+
+    <ion-nav-buttons side="left">
+
+        <button ng-if="!!!backView||clear" ng-click="MXWebUIBack();"
+                class="button back-button buttons  button-clear header-item">
+            <i class="icon"
+               ng-class="{'ion-android-arrow-back':$ionicPlatform.isAndroid(),'icon ion-ios-arrow-back':!$ionicPlatform.isAndroid()}">
+                <span>返回</span>
+            </i>
+        </button>
+
+    </ion-nav-buttons>
+
+    <ion-nav-buttons side="secondary">
+        <button ng-if="!!!backView||clear" class="button button-clear header-item" ui-sref="redPackage.history">
+            我的红包
+        </button>
+    </ion-nav-buttons>
+
+    <ion-content scrollbar-y="false" scrollbar-x="false" direction="y">
+
+        <img ng-if="hongbao.amount||hongbao.none" style="width: 100%" src="img/hb-bg1.png">
+
+
+        <div ng-if="!hongbao.none" class="text-center padding">
+            <h1 class="energized" ng-bind="hongbao.amount&&((hongbao.amount|currency:'')+'积分')"></h1>
+            <div class="padding"></div>
+            <div ng-show="hongbao.message" class="padding light">
+                <span ng-bind="hongbao.message"></span>
+            </div>
+            <p ng-show="hongbao.serialNo" class="padding" style="color:#ddd;color: rgba(255,255,255,.6)">
+                流水号：<span ng-bind="hongbao.serialNO"></span>
+            </p>
+        </div>
+
+        <div class="text-center padding" ng-if="hongbao.none">
+            <h1 class="energized">您来晚了！</h1>
+
+        </div>
+
+        <div class="padding">
+            <button ng-if="showMoreHongnao" ui-sref="redPackage.send({'hongbaoId':hongbaoId})"
+                    class="button button-energized button-clear button-block">
+                看看别人的手气
+            </button>
+        </div>
+
+
+    </ion-content>
+
+    </ion-slide-box>
+</ion-view>
