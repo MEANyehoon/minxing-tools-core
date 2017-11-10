@@ -12,7 +12,6 @@ exports.validatePackageName = (name) => {
 
 
 function readPropertiesSync(propertiesPath) {
-    console.log('read properties sync->', propertiesPath);
     var fs = require('fs');
     //读取并解析plugin.properties文件
     var content = fs.readFileSync(propertiesPath, "utf-8");

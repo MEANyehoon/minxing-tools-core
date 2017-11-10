@@ -1,0 +1,932 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>敏行JS-DSK Demo</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <meta name="format-detection" content="telephone=no" />
+    <script src="jquery.min.js"></script>
+    <script type="text/javascript" charset="utf-8">
+
+
+    // Wait for PhoneGap to load
+    //
+    document.addEventListener("deviceready", onDeviceReady, false);
+
+    // PhoneGap is ready
+    //
+    function onDeviceReady() {
+        // Empty
+    }
+    // alert dialog dismissed
+    function successCallback() {
+        alert('success');
+    }
+
+    function shareToChatCallback(result){
+      alert(result);
+      alert(JSON.parse(result))
+    }
+
+    //通过获取ssoToken方法
+    function getSSOToken(ocuID) {
+      MXCommon.getSSOToken(
+        ocuID,
+        tokenCallBack
+      );
+    }
+    function tokenCallBack(token) {
+      alert(token)
+    }
+    //获取服务器地址方法
+    function getServerUrl() {
+      MXCommon.getServerUrl(
+        urlCallBack
+      );
+    }
+    function urlCallBack(serverUrl) {
+      alert(serverUrl)
+    }
+    //选人方法(多选)
+    function selectUsers() {
+      MXContacts.selectUsers(
+        selectUsersCallBack
+      ,true);
+    }
+    //选人方法(单选)
+    function selectUser() {
+      MXContacts.selectUser(
+        selectUserCallBack
+      ,true);
+    }
+    //新选人方法(多选)
+    function selectUsersNew() {
+      window.aaa = '111';
+      MXContacts.selectUsers(
+        selectUsersNewCallBack
+      ,true);
+    }
+    //新选人方法(单选)
+    function selectUserNew() {
+      window.aaa = '111';
+      MXContacts.selectUser(
+        selectUserNewCallBack
+      ,true);
+    }
+
+    function selectUsersWithCustomDepartment() {
+      var count = eval(document.getElementById('ref_id1')).value;
+      var arr = [];
+      arr.push(count);
+      MXContacts.selectUsersWithCustomDepartment(
+        selectUsersWithCustomDepartmentCallBack
+      ,true,arr);
+    }
+    //选人方法(单选)
+    function selectUserWithCustomDepartment() {
+      var count1 = eval(document.getElementById('ref_id')).value;
+      console.log(count1)
+      var arr1 = [];
+      arr1.push(count1);
+      console.log('arr1',arr1)
+      MXContacts.selectUserWithCustomDepartment(
+        selectUserWithCustomDepartmentCallBack
+      ,true,arr1);
+    }
+
+
+    function selectUsersCallBack(selectUser) {
+      alert("result:" + JSON.stringify(selectUser.data));
+
+    }
+    function selectUserCallBack(selectUser) {
+      alert("name:" + selectUser.data.name);
+    }
+    function selectUsersNewCallBack(selectUser) {
+      alert("result:" + selectUser.data);
+      if(aaa){
+        var ids = [];
+        for (var i = 0; i < selectUser.data.length; i++) {
+          ids.push(selectUser.data[i].id)
+        };
+        MXCommon.api({
+         type: "GET",
+         url: '/api/v1/users/attributes_of_users',
+         dataType: "text",
+         data: {user_ids:ids.toString()},
+         async: true,
+         complete: function(){},
+         success: function (data,status,xhr) {
+           alert("success");
+           alert(JSON.stringify(data))
+         },
+         error: function(data,status, xhr){
+           alert("error");
+           alert(JSON.stringify(data));
+         }
+        })
+      }
+
+    }
+    function selectUserNewCallBack(selectUser) {
+      alert("name:" + selectUser.data.name);
+      if(aaa){
+        var id = selectUser.data.id;
+        MXCommon.api({
+         type: "GET",
+         url: '/api/v1/users/attributes_of_users',
+         dataType: "text",
+         data: {user_ids:id},
+         async: true,
+         complete: function(){},
+         success: function (data,status,xhr) {
+           alert("success");
+           alert(JSON.stringify(data))
+         },
+         error: function(data,status, xhr){
+           alert("error");
+           alert(JSON.stringify(data));
+         }
+        })
+      }
+    }
+    function selectUsersWithCustomDepartmentCallBack(selectUser) {
+      alert("result:" + JSON.stringify(selectUser.data));
+
+    }
+    function selectUserWithCustomDepartmentCallBack(selectUser) {
+      alert("name:" + selectUser.data.name);
+    }
+    //获取当前用户方法
+    function getCurrentUser() {
+      MXCommon.getCurrentUser(
+        getCurrentUserCallBack
+      )
+    }
+    function getCurrentUserCallBack(currentUser) {
+      alert("name:" + currentUser.name);
+    }
+    //向用户发起聊天
+    function startChat() {
+      MXChat.chat(
+          ["dlb@dehuinet.com"],  // message
+        successCallback        // callback
+      );
+    }
+    //获取群聊信息接口
+    function getConversationByID(){
+      var conversation_id = eval(document.getElementById('conversation_id')).value;
+      MXChat.getConversationByID(
+        conversation_id,  // message
+        getConversationByIDCallback        // callback
+      );
+    }
+    function getConversationByIDCallback(result){
+      alert(result);
+      alert(JSON.parse(result))
+    }
+    //调用敏行API
+    function api() {
+      MXCommon.api({
+        type: "GET",
+        url: '/api/v1/users?limit=1',
+        dataType: "text",
+        //contentType: "application/x-www-form-urlencoded",
+        async: true,
+        complete: function(){
+        },
+        success: function (data,status,xhr) {
+          alert("name:" + JSON.parse(data).items[0].name)
+        },
+        error: function(data,status, xhr){
+          alert(JSON.stringify(data));
+        }
+      })
+    }
+    //调用远程AJAX
+    function ajax() {
+      MXCommon.ajax({
+         type: "GET",
+         url: 'http://apis.baidu.com/apistore/mobilenumber/mobilenumber',
+         dataType: "text",
+         async: true,
+         complete: function(){},
+         success: function (data,status,xhr) {
+           alert("success");
+           alert('errNum:' + JSON.parse(data).errNum);
+         },
+         error: function(data,status, xhr){
+           alert("error");
+           alert(JSON.stringify(data));
+         }
+      })
+    }
+    //根据实际的登录用户获取人员信息数据
+    function getPersonInfo(loginName) {
+      alert(MXCommon.getPersonInfo)
+      MXCommon.getPersonInfo(
+        loginName,
+        getPersonInfoCallBack
+      );
+    }
+    //根据实际的登录用户查看人员信息数据
+    function getPersonInfoCallBack(personInfo) {
+      alert("name:" + personInfo.name);
+    }
+    function viewPersonInfo(loginName) {
+      MXCommon.viewPersonInfo(
+        loginName
+      );
+    }
+    //获取“分享到敏信”按钮点击状态接口(带UI)
+    function shareToChat(params) {
+      MXShare.shareToChat(
+        params,
+        shareToChatCallback
+      );
+    }
+    //获取“分享到工作圈”按钮点击状态接口
+    function shareToCircle(params) {
+      MXShare.shareToCircle(
+        params,
+        successCallback
+      );
+    }
+   //获取“分享到群聊”按钮点击状态接口(不带UI，需要conversation_id,请在附近栏添加使用此API)
+    function myFunc(){
+      //获取hash后面的所有参数
+      function UrlSearch() {
+         var name,value;
+         var str=location.href; //取得整个地址栏
+         var num=str.indexOf("#")
+         str=str.substr(num+1); //取得所有参数   stringvar.substr(start [, length ]
+
+         var arr=str.split("&"); //各个参数放到数组里
+         for(var i=0;i < arr.length;i++){
+          num=arr[i].indexOf("=");
+          if(num>0){
+           name=arr[i].substring(0,num);
+           value=arr[i].substr(num+1);
+           this[name]=value;
+           }
+          }
+      }
+      MXShare.shareToChatAuto({'title':'Title','image_url':'thumbnail', 'url':'', 'app_url':'launchApp://h5_demo?parame1=lkl/parame2=ddd/parame3=dd', 'description':'desc', 'source_id':'notification','source_type':'ocu||app','conversation_id':new UrlSearch().conversation_id});
+      MXWebui.closeWindow();
+    }
+    function toCircleCallback(result) {
+    }
+    // Show a custom alert
+    //隐藏右上角分享按钮接口
+    function hideWebViewTitle() {
+      MXWebui.hideWebViewTitle(
+        successCallback        // callback
+      );
+    }
+    //显示右上角分享按钮接口
+    function showWebViewTitle(title) {
+      MXWebui.showWebViewTitle(
+        title
+      );
+    }
+    //隐藏页面上部标题栏接口
+    function hideOptionMenu() {
+      MXWebui.hideOptionMenu(
+      );
+    }
+    //显示页面上部标题栏接口
+    function showOptionMenu() {
+      MXWebui.showOptionMenu(
+      );
+    }
+    //隐藏页面下部工具栏接口
+    function hideToolbar() {
+      MXWebui.hideToolbar(
+        successCallback
+      );
+    }
+    //显示页面下部工具栏接口
+    function showToolbar() {
+      MXWebui.showToolbar(
+        successCallback
+      );
+    }
+    //关闭当前页面接口
+    function closeWindow() {
+      MXWebui.closeWindow(
+        successCallback
+      );
+    }
+    //禁用android back键接口
+    function disableBackKey() {
+      MXWebui.disableBackKey(
+        successCallback
+      );
+    }
+    function jsCallBack(result) {
+        alert(result);
+    }
+    function errorCallBack(result) {
+        alert(result);
+    }
+
+  // function onCameraSuccess() {
+  //   alert("Camera cleanup success.")
+  // }
+
+  // function onCameraFail(message) {
+  //     alert('Failed because: ' + message);
+  // }
+  //   //调用相册方法
+  //   function picture() {
+  //         navigator.camera.getPicture(onCameraSuccess, onCameraFail, {
+  //     destinationType: Camera.DestinationType.FILE_URI,
+  //     sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
+  //     popoverOptions: new CameraPopoverOptions(300, 300, 100, 100, Camera.PopoverArrowDirection.ARROW_ANY)
+  // });
+
+  // // capture callback
+
+  //     }
+  //   //调用相机方法
+  //   function camera() {
+  //   var captureSuccess = function(mediaFiles) {
+  //     var i, path, len;
+  //     for (i = 0, len = mediaFiles.length; i < len; i += 1) {
+  //       alert(JSON.stringify(mediaFiles[i]))
+  //         path = mediaFiles[i].fullPath;
+  //         alert(path)
+  //     }
+  // };
+
+  // // capture error callback
+  // var captureError = function(error) {
+  //     navigator.notification.alert('Error code: ' + error.code, null, 'Capture Error');
+  // };
+  //     navigator.device.capture.captureImage(captureSuccess, captureError, {limit:2});
+  // }
+
+
+  //调用扫一扫
+  function scanQRCode(needResult) {
+    MXCommon.scanQRCode(
+      needResult,
+      jsCallBack
+    );
+  }
+  //启动应用
+  function lanuchApp(appid) {
+    MXCommon.lanuchApp(
+      appid,"123",
+      jsCallBack,errorCallBack
+    );
+  }
+  // function lanuchApp1(appid) {
+  //   alert(appid)
+  //   MXCommon.lanuchApp(
+  //     appid,"123",
+  //     jsCallBack,errorCallBack
+  //   );
+  // }
+  // function lanuchApp2(appid) {
+  //   alert(appid)
+  //   MXCommon.lanuchApp(
+  //     appid,"123",
+  //     jsCallBack,errorCallBack
+  //   );
+  // }
+
+  //设置APP未读数接口
+  function setAppUnreadCount(appid) {
+    var count = eval(document.getElementById('appUnreadCount')).value;
+    MXCommon.setAppUnreadCount(
+      appid,count,
+      jsCallBack,errorCallBack
+    );
+  }
+  //设置APP群聊未读数接口
+  function setAppChatUnreadCount(appid) {
+    var count = eval(document.getElementById('appChatUnreadCount')).value;
+    MXCommon.setAppChatUnreadCount(
+      appid,count,
+      jsCallBack,errorCallBack
+    );
+  }
+  //设置导航栏背景颜色接口
+  function setNavBgColor() {
+    var bgColor = eval(document.getElementById('setNavBgColor')).value;
+    console.log(bgColor)
+    MXWebui.setNavBgColor(
+      bgColor,
+      jsCallBack,errorCallBack
+    );
+  }
+  //设置右上角菜单背景颜色接口
+  function setPopupMenuBgColor() {
+    var bgColor = eval(document.getElementById('setPopupMenuBgColor')).value;
+    console.log(bgColor)
+    MXWebui.setPopupMenuBgColor(
+      bgColor,
+      jsCallBack,errorCallBack
+    );
+  }
+  var images = {
+    localId: [],
+    serverId: []
+  };
+  function cameraCompleteCallback(result){
+    alert(result);
+    alert(JSON.parse(result).localIds);
+    images.localId = JSON.parse(result).localIds;
+    alert($)
+    alert($.each)
+    $.each(JSON.parse(result).localIds, function(index, val) {
+      $(".camera-img").append('<img src="'+ val +'" width="33%">');
+    });
+    $(".camera-img img").bind('click',function(){
+      var index = $(".camera-img img").index($(this))
+      alert('index:::' + $(".camera-img img").index($(this)));
+      MXCommon.browseImages(images.localId,index)
+    })
+    //MXCommon.browseImages(images.localId,)
+    alert('已选择 ' + JSON.parse(result).localIds.length + ' 张图片');
+  }
+  function pictureCompleteCallback(result){
+    alert(result);
+    alert(JSON.parse(result).localIds);
+    images.localId = JSON.parse(result).localIds;
+    alert($)
+    alert($.each)
+    $.each(JSON.parse(result).localIds, function(index, val) {
+      $(".picture-img").append('<img src="'+ val +'" width="33%">');
+    });
+    $(".picture-img img").bind('click',function(){
+      var index = $(".picture-img img").index($(this))
+      alert('index:::' + $(".picture-img img").index($(this)));
+      MXCommon.browseImages(images.localId,index)
+    })
+    //MXCommon.browseImages(images.localId,)
+    alert('已选择 ' + JSON.parse(result).localIds.length + ' 张图片');
+  }
+  function cameraOrPictureCompleteCallback(result){
+    alert(result);
+    alert(JSON.parse(result).localIds);
+    images.localId = JSON.parse(result).localIds;
+    alert($)
+    alert($.each)
+    $.each(JSON.parse(result).localIds, function(index, val) {
+      $(".cameraOrPicture-img").append('<img src="'+ val +'" width="33%">');
+    });
+    $(".cameraOrPicture-img img").bind('click',function(){
+      var index = $(".cameraOrPicture-img img").index($(this))
+      alert('index:::' + $(".cameraOrPicture-img img").index($(this)));
+      MXCommon.browseImages(images.localId,index)
+    })
+    alert('已选择 ' + JSON.parse(result).localIds.length + ' 张图片');
+  }
+  // $(".img img").click(function(index){
+  //   alert(index)
+  // })
+  function completeUploadCallback(result){
+    alert(result);
+    images.serverId.push(JSON.parse(result).serverId);
+    alert("上传成功!")
+  }
+  function errorUploadCallBack(result){
+    alert(JSON.stringify(result));
+    alert("上传失败!")
+  }
+  //调用相机方法
+  function camera(){
+    var count = eval(document.getElementById('camera')).value;
+    console.log('count1', count)
+    MXCommon.chooseImage(
+      count, ['camera'],
+      cameraCompleteCallback,errorCallBack
+    );
+  }
+  //调用相册方法
+  function picture(){
+    var count = eval(document.getElementById('picture')).value;
+    MXCommon.chooseImage(
+      count, ['album'],
+      pictureCompleteCallback,errorCallBack
+    );
+  }
+   //调用相机或相册方法
+  function cameraOrPicture(){
+    var count = eval(document.getElementById('cameraOrPicture')).value;
+    console.log('count3', typeof(count))
+    MXCommon.chooseImage(
+      count, ['album', 'camera'],
+      cameraOrPictureCompleteCallback,errorCallBack
+    );
+  }
+  //上传图片方法
+  function uploadImage(){
+   if (images.localId.length == 0) {
+      alert('请先选择图片');
+      return;
+    }
+    var i = 0, length = images.localId.length;
+    images.serverId = [];
+    alert(images.localId)
+    function upload() {
+      MXCommon.uploadImage(
+        images.localId,true,
+        completeUploadCallback,errorUploadCallBack
+      );
+    }
+    upload();
+  }
+
+
+  //获取地理位置接口(native)
+  function getLocation(){
+    alert(MXLocation.getLocation)
+    MXLocation.getLocation(function(res){
+      alert(res);
+    });
+  }
+  //获取地理位置接口(JS)
+  function getLocationJS(){
+    navigator.geolocation.getCurrentPosition(translatePoint); //定位
+    function translatePoint(position){
+      //获取经纬度
+      var currentLon = position.coords.longitude;
+      var currentLat = position.coords.latitude;
+      var speed = position.coords.speed;
+      if(speed == null){
+        speed = 0
+      }
+      var accuracy = position.coords.accuracy;
+    }
+  }
+
+      function setCustomHeaderMenuIos(json){
+        var jsonObj = JSON.stringify(json);
+        MXWebui.setCustomHeaderMenu(
+          jsonObj,setCustomHeaderMenuIosCallback
+        );
+      }
+
+      function setCustomHeaderMenuIosCallback(result){
+        alert(result);
+        if(result == 'sharePeople'){
+          MXShare.shareToChat({'title':'Title','image_url':'http://test.dehuinet.com:8030/mxpp/upload/mxpp_1463727800001.jpg', 'url':'https://www.baidu.com/', 'app_url':'', 'description':'desc', 'source_id':'shareTest','source_type':'ocu||app'});
+        }else if(result == 'shareWork'){
+          MXShare.shareToCircle({'title':'Title','image_url':'thumbnail', 'url':'url', 'app_url':'appUrl', 'description':'desc', 'source_id':'notification','source_type':'ocu||app'});
+        }else if(result == 'copyLink'){
+          MXCommon.copyLink();
+        }else if(result == 'favoriteLink'){
+          MXCommon.favoriteLink();
+        }else if(result == 'openBrowser'){
+          MXCommon.openBrowser();
+        }else if(result == 'fontStyle'){
+          MXCommon.showZoomController();
+        }
+      }
+
+      function setCustomHeaderMenuAndroid(json){
+        var jsonObj = JSON.stringify(json);
+        MXWebui.setCustomHeaderMenu(
+          jsonObj,setCustomHeaderMenuAndroidCallback
+        );
+      }
+
+      function setCustomHeaderMenuAndroidCallback(result){
+        alert(result);
+        if(result == 'sharePeople'){
+          MXShare.shareToChat({'title':'Title','image_url':'http://test.dehuinet.com:8030/mxpp/upload/mxpp_1463727800001.jpg', 'url':'https://www.baidu.com/', 'app_url':'', 'description':'desc', 'source_id':'shareTest','source_type':'ocu||app'});
+        }else if(result == 'shareWork'){
+          MXShare.shareToCircle({'title':'Title','image_url':'thumbnail', 'url':'url', 'app_url':'appUrl', 'description':'desc', 'source_id':'notification','source_type':'ocu||app'});
+        }else if(result == 'copyLink'){
+          MXCommon.copyLink();
+        }else if(result == 'favoriteLink'){
+          MXCommon.favoriteLink();
+        }else if(result == 'openBrowser'){
+          MXCommon.openBrowser();
+        }else if(result == 'fontStyle'){
+          MXCommon.showZoomController();
+        }
+      }
+
+    </script>
+    <style type="text/css">
+      /*p{
+        height:20px;
+      }
+      a{
+        float:left;
+      }
+      span{
+        float:right;
+        font-size:14px;
+      }*/
+      *{padding:0;margin:0;}
+      html {
+        -ms-text-size-adjust: 100%;
+        -webkit-text-size-adjust: 100%;
+        -webkit-user-select: none;
+        user-select: none;
+      }
+      body {
+        line-height: 1.6;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        background-color: #f1f0f6;
+      }
+      a {
+        text-decoration: none;
+        color: #333;
+      }
+      button {
+        font-family: inherit;
+        font-size: 100%;
+        margin: 0;
+        *font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      }
+      .mxapi_index_container{
+        width: 100%;
+        background: #fff;
+      }
+      .mxapi_index_container ul li{
+        padding-left: 15px;
+        list-style: none;
+      }
+      .label_inner {
+        display: block;
+        border-bottom: 1px solid #eaeaea;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        min-height: 24px;
+        position: relative;
+      }
+      .mxapi_index_form{
+        background-color: #ffffff;
+        padding: 0 15px;
+        margin-top: 30px;
+        padding-bottom: 15px;
+      }
+      h3{
+        position: relative;
+        padding-top: 16px;
+        margin-top: 25px;
+        font-size: 16px;
+        font-weight: 400;
+        color: #3e3e3e;
+      }
+      h3:before {
+        content: " ";
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 200%;
+        height: 1px;
+        border-top: 1px solid #ededed;
+        -webkit-transform-origin: 0 0;
+        transform-origin: 0 0;
+        -webkit-transform: scale(0.5);
+        transform: scale(0.5);
+      }
+      .desc {
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 2em;
+        color: #8d8c92;
+      }
+      .btn, input{
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 15px;
+        padding-left: 14px;
+        padding-right: 14px;
+        font-size: 18px;
+        text-align: center;
+        text-decoration: none;
+        overflow: visible;
+        height: 42px;
+        border-radius: 5px;
+        -moz-border-radius: 5px;
+        -webkit-border-radius: 5px;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        color: #ffffff;
+        line-height: 42px;
+        -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+      }
+      .btn_primary {
+        background-color: #4285e0;
+      }
+      .btn_primary:not(.btn_disabled):visited {
+        color: #ffffff;
+      }
+      .btn_primary:not(.btn_disabled):active {
+        color: rgba(255, 255, 255, 0.9);
+        background-color: #2A6BC7;
+      }
+      button.btn {
+        width: 100%;
+        border: 0;
+        outline: 0;
+        -webkit-appearance: none;
+      }
+      input.input{
+        width: 100%;
+        border: 1px solid #efefef;
+        color: #8d8c92;
+      }
+      button.btn:focus {
+        outline: 0;
+      }
+
+      .camera-img img{
+        margin-right:2%;
+      }
+      .camera-img img:nth-child(3n){
+        margin-right: 0px;
+      }
+      .picture-img img{
+        margin-right:2%;
+      }
+      .picture-img img:nth-child(3n){
+        margin-right: 0px;
+      }
+      .cameraOrPicture-img img{
+        margin-right:2%;
+      }
+      .cameraOrPicture-img img:nth-child(3n){
+        margin-right: 0px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="mxapi_index_container">
+      <ul>
+        <li><a class="label_inner" href="#menu-basic">基础接口</a></li>
+        <li><a class="label_inner" href="#menu-share">分享接口</a></li>
+        <li><a class="label_inner" href="#menu-image">图像接口</a></li>
+        <li><a class="label_inner" href="#menu-gps">地理位置接口</a></li>
+        <li><a class="label_inner" href="#menu-webview">界面操作接口</a></li>
+        <li><a class="label_inner" href="#menu-request">请求接口</a></li>
+        <li><a class="label_inner" href="#menu-circle">工作圈接口</a></li>
+        <li><a class="label_inner" href="#menu-scan">扫一扫接口</a></li>
+        <li><a class="label_inner" href="#menu-lanuchApp">启动应用接口</a></li>
+        <li><a class="label_inner" href="#menu-setUnreadCount">设置未读数接口</a></li>
+        <li><a class="label_inner" href="#menu-setNavBgColor">设置颜色接口</a></li>
+        <li><a class="label_inner" href="#menu-setCustomHeaderMenu">设置webview右上角菜单接口</a></li>
+      </ul>
+    </div>
+    <div class="mxapi_index_form">
+        <h3 id="menu-basic">基础接口</h3>
+        <span class="desc">根据AppID获取当前用户的sso_token接口</span>
+        <button class="btn btn_primary" onclick="getSSOToken('all'); return false;">getSSOToken</button>
+        <span class="desc">获取服务器地址接口</span>
+        <button class="btn btn_primary" onclick="getServerUrl(); return false;">getServerUrl</button>
+        <span class="desc">获取通讯录人员及部门数据接口(单选)</span>
+        <button class="btn btn_primary" onclick="selectUser(); return false;">selectUser</button>
+        <span class="desc">获取通讯录人员及部门数据接口(多选)</span>
+        <button class="btn btn_primary" onclick="selectUsers(); return false;">selectUsers</button>
+        <span class="desc">新获取通讯录人员及部门数据接口(单选)</span>
+        <button class="btn btn_primary" onclick="selectUserNew(); return false;">selectUserNew</button>
+        <span class="desc">新获取通讯录人员及部门数据接口(多选)</span>
+        <button class="btn btn_primary" onclick="selectUsersNew(); return false;">selectUsersNew</button>
+        <span class="desc">获取通讯录人员及部门数据接口带部门(单选)</span>
+        <input class="input" id="ref_id" placeholder="请输入ref_id,例如这里为dev3测试,ref_id为11001,11002"/>
+        <button class="btn btn_primary" onclick="selectUserWithCustomDepartment(); return false;">selectUserWithCustomDepartment</button>
+        <span class="desc">获取通讯录人员及部门数据接口带部门(多选)</span>
+        <input class="input" id="ref_id1" placeholder="请输入ref_id,例如这里为dev3测试,ref_id为11001,11002"/>
+        <button class="btn btn_primary" onclick="selectUsersWithCustomDepartment(); return false;">selectUsersWithCustomDepartment</button>
+        <span class="desc">获取当前用户数据接口</span>
+        <button class="btn btn_primary" onclick="getCurrentUser(); return false;">getCurrentUser</button>
+        <span class="desc">向用户发起聊天接口</span>
+        <button class="btn btn_primary" onclick="startChat(); return false;">chat</button>
+        <span class="desc">向用户发起聊天接口</span>
+        <input class="input" id="conversation_id" placeholder="请输入conversation_id"/>
+        <button class="btn btn_primary" onclick="getConversationByID(); return false;">getConversationByID</button>
+        <span class="desc">根据登录用户获取人员信息数据</span>
+        <input class="input" placeholder="请输入login_name',例如dinglb@dehuinet.com"/>
+        <button class="btn btn_primary" onclick="getPersonInfo('dinglb@dehuinet.com'); return false;">getPersonInfo</button>
+        <span class="desc">根据登录用户查看人员信息</span>
+        <button class="btn btn_primary" onclick="viewPersonInfo('dinglb@dehuinet.com'); return false;">viewPersonInfo</button>
+
+        <h3 id="menu-share">分享接口</h3>
+        <span class="desc">获取“分享到敏信”按钮点击状态接口(带UI)</span>
+        <button class="btn btn_primary" onclick="shareToChat({'title':'Title','image_url':'http://test.dehuinet.com:8030/mxpp/upload/mxpp_1463727800001.jpg', 'url':'https://www.baidu.com/', 'app_url':'', 'description':'desc', 'source_id':'shareTest','source_type':'ocu||app'}); return false;">shareToChat</button>
+        <span class="desc">获取“分享到工作圈”按钮点击状态接口</span>
+        <button class="btn btn_primary" onclick="shareToCircle({'title':'Title','image_url':'thumbnail', 'url':'url', 'app_url':'appUrl', 'description':'desc', 'source_id':'notification','source_type':'ocu||app'}); return false;">shareToCircle</button>
+        <span class="desc">获取“分享到群聊”按钮点击状态接口(不带UI，需要conversation_id,请在附近栏添加使用此API)</span>
+        <button class="btn btn_primary" onclick="myFunc()">shareToChatAuto</button>
+
+        <h3 id="menu-image">图像接口</h3>
+        <span class="desc">拍照接口</span>
+        <div class="camera-img"></div>
+        <input id="camera"  class="input" placeholder="请输入展示数量"/>
+        <button class="btn btn_primary" onclick="camera(); return false;">camera</button>
+        <span class="desc">从手机相册中选图接口</span>
+        <div class="picture-img"></div>
+        <input id="picture"  class="input" placeholder="请输入展示数量"/>
+        <button class="btn btn_primary" onclick="picture(); return false;">picture</button>
+        <span class="desc">拍照或从手机相册中选图接口</span>
+        <div class="cameraOrPicture-img"></div>
+        <input id="cameraOrPicture"  class="input" placeholder="请输入展示数量"/>
+        <button class="btn btn_primary" onclick="cameraOrPicture(); return false;">cameraOrPicture</button>
+        <span class="desc">上传图片接口</span>
+        <button class="btn btn_primary" onclick="uploadImage()">uploadImage</button>
+        <span class="desc">下载附件接口</span>
+        <button class="btn btn_primary" onclick="MXCommon.download('http://pic14.nipic.com/20110522/7411759_164157418126_2.jpg'); return false;">download</button>
+        <span class="desc">预览图片接口</span>
+        <button class="btn btn_primary" onclick="MXCommon.browseImages(['http://dev3.dehuinet.com:8013/mxpp/files/attachments/2 热度榜_1467687452171.jpg', 'http://dev3.dehuinet.com:8013/mxpp/files/attachments/bg_document1_1467687460690.png', 'http://dev3.dehuinet.com:8013/mxpp/files/attachments/bg_document2_1467687466418.png', 'http://pic14.nipic.com/20110522/7411759_164157418126_2.jpg'],2)">browseImages</button>
+
+        <h3 id="menu-gps">地理位置接口</h3>
+        <span class="desc">获取地理位置接口(native)</span>
+        <div class="img"></div>
+        <button class="btn btn_primary" onclick="getLocation(); return false;">getLocation(native)</button>
+        <span class="desc">获取地理位置接口(JS)</span>
+        <div class="img"></div>
+        <button class="btn btn_primary" onclick="getLocationJS(); return false;">getLocation(JS)</button>
+
+        <h3 id="menu-webview">界面操作接口</h3>
+        <span class="desc">隐藏页面上部标题栏接口</span>
+        <button class="btn btn_primary" onclick="hideWebViewTitle(); return false;">hideWebViewTitle</button>
+        <span class="desc">显示页面上部标题栏接口</span>
+        <button class="btn btn_primary" onclick="showWebViewTitle('title'); return false;">showWebViewTitle</button>
+        <span class="desc">隐藏右上角分享按钮接口</span>
+        <button class="btn btn_primary" onclick="hideOptionMenu(); return false;">hideOptionMenu</button>
+        <span class="desc">隐藏页面上部标题栏接口</span>
+        <button class="btn btn_primary" onclick="hideWebViewTitle(); return false;">hideWebViewTitle</button>
+        <span class="desc">显示右上角分享按钮接口</span>
+        <button class="btn btn_primary" onclick="showOptionMenu(); return false;">showOptionMenu</button>
+        <span class="desc">隐藏页面下部工具栏接口</span>
+        <button class="btn btn_primary" onclick="hideToolbar(); return false;">hideToolbar</button>
+        <span class="desc">显示页面下部工具栏接口</span>
+        <button class="btn btn_primary" onclick="showToolbar(); return false;">showToolbar</button>
+        <span class="desc">关闭当前页面接口</span>
+        <button class="btn btn_primary" onclick="closeWindow(); return false;">closeWindow</button>
+        <span class="desc">禁用android back键接口</span>
+        <button class="btn btn_primary" onclick="disableBackKey(); return false;">disableBackKey</button>
+
+        <h3 id="menu-request">请求接口</h3>
+        <span class="desc">发起API请求(敏行的API)</span>
+        <button class="btn btn_primary" onclick="api(); return false;">api</button>
+        <span class="desc">发起AJAX请求(远程地址的API)</span>
+        <button class="btn btn_primary" onclick="ajax(); return false;">ajax</button>
+
+        <h3 id="menu-circle">工作圈接口</h3>
+        <span class="desc">从webview页面跳转到指定工作圈接口</span>
+        <button class="btn btn_primary" onclick="MXCircle.switchToGroup('-1')">switchToGroup</button>
+
+        <h3 id="menu-scan">扫一扫接口</h3>
+        <span class="desc">调起敏行扫一扫接口</span>
+        <button class="btn btn_primary" onclick="scanQRCode(false); return false;">scanQRCode(微信处理结果)</button>
+        <button class="btn btn_primary" onclick="scanQRCode(true); return false;">scanQRCode(直接返回结果)</button>
+
+        <h3 id="menu-lanuchApp">启动应用接口</h3>
+        <span class="desc">启动移动应用接口</span>
+        <button class="btn btn_primary" onclick="lanuchApp('mxsetting');">lanuchApp</button>
+        <span class="desc">启动web应用接口</span>
+        <button class="btn btn_primary" onclick="lanuchApp('web_test');">lanuchApp</button>
+        <span class="desc">启动插件应用接口</span>
+        <button class="btn btn_primary" onclick="lanuchApp('mail');">lanuchApp</button>
+
+        <h3 id="menu-setUnreadCount">设置未读数接口</h3>
+        <span class="desc">设置APP未读数接口</span>
+        <input id="appUnreadCount" class="input" placeholder="请输入要设置的未读数"/>
+        <button class="btn btn_primary" onclick="setAppUnreadCount('h5API'); return false;">setAppUnreadCount</button>
+        <span class="desc">设置APP群聊未读数接口</span>
+        <input id="appChatUnreadCount"  class="input" placeholder="请输入要设置的未读数"/>
+        <button class="btn btn_primary" onclick="setAppChatUnreadCount('h5API'); return false;">setAppChatUnreadCount</button>
+
+        <h3 id="menu-setNavBgColor">设置颜色接口</h3>
+        <span class="desc">设置导航栏背景颜色接口</span>
+        <input id="setNavBgColor" class="input" placeholder="请输入要设置的背景颜色色值"/>
+        <button class="btn btn_primary" onclick="setNavBgColor(); return false;">setNavBgColor</button>
+        <span class="desc">设置右上角菜单背景颜色接口</span>
+        <input id="setPopupMenuBgColor" class="input" placeholder="请输入要设置的背景颜色色值"/>
+        <button class="btn btn_primary" onclick="setPopupMenuBgColor(); return false;">setPopupMenuBgColor</button>
+
+        <h3>设置webview右上角菜单接口(ios)</h3>
+        <span class="desc">设置webview右上角菜单接口</span>
+        <button class="btn btn_primary" onclick="setCustomHeaderMenuIos([{'title':'sharePeople','key':'sharePeople','icon':'mx_share_people'},{'title':'shareWork','key':'shareWork','icon':'mx_share_work'},{'title':'copyLink','key':'copyLink','icon':'mx_icon_copy'},{'title':'favoriteLink','key':'favoriteLink','icon':'mx_icon_copy'},{'title':'openBrowser','key':'openBrowser','icon':'mx_icon_onsafari'},{'title':'fontStyle','key':'changeWebFont','icon':'mx_icon_font'}]); return false;">setCustomHeaderMenu</button>
+
+        <h3>设置webview右上角菜单接口(android)</h3>
+        <span class="desc">设置webview右上角菜单接口</span>
+        <button class="btn btn_primary" onclick="setCustomHeaderMenuAndroid([{'title':'sharePeople','key':'sharePeople','icon':'mx_share_people'},{'title':'shareWork','key':'shareWork','icon':'mx_share_work'},{'title':'copyLink','key':'copyLink','icon':'mx_icon_copy'},{'title':'favoriteLink','key':'favoriteLink','icon':'mx_icon_copy'},{'title':'openBrowser','key':'openBrowser','icon':'mx_icon_onsafari'},{'title':'fontStyle','key':'fontStyle','icon':'mx_icon_font_style'}]); return false;">setCustomHeaderMenu</button>
+    </div>
+    <script type="text/javascript">
+      window.onerror=handleErr;
+      var txt="";
+      function handleErr(msg,url,l){
+        txt="本页中存在错误。\n\n";
+        txt+="错误：" + msg + "\n";
+        txt+="URL: " + url + "\n";
+        txt+="行：" + l + "\n\n";
+        txt+="点击“确定”继续。\n\n";
+        alert(txt);
+        return true;
+      }
+    </script>
+  </body>
+</html>
