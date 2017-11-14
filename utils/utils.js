@@ -1,3 +1,7 @@
+const Fse = require('fs-extra');
+const Path = require('path');
+const projectStructure = require('./project_structure.json');
+
 exports.validatePackageName = (name) => {
     let valid = true;
     if (!name.match(/^[\w]{1,20}$/i)) {
@@ -8,6 +12,49 @@ exports.validatePackageName = (name) => {
         valid = false;
     }
     return valid;
+}
+
+function getProjectStructure() {
+    return projectStructure;
+}
+exports.getProjectStructure = getProjectStructure;
+exports.fetchProjectRootInfoByFile =  (file) => {
+    if (typeof file !== "string") {
+        console.log(`${file} 不是一个有效的文件路径`);
+        return;
+    }
+
+    // 逆序寻找最接近目标文件的plugin.properties文件.
+    let project = Path.resolve(file);
+    let configPath = null;
+    let type = null;
+
+    for (; true;) {
+        configPath = Path.resolve(project, "plugin.properties");
+        if (Fse.existsSync(configPath)) {
+            type = getAppType(configPath);
+            break;
+        }
+
+        if (project === Path.resolve("/")) {
+            break;
+        }
+
+        project = Path.resolve(project, "..")
+    }
+    if (type) {
+        const directoryPath = Path.resolve(project, getProjectStructure()[type]);
+        if (Fse.existsSync(directoryPath) && Fse.statSync(directoryPath).isDirectory()) {
+            return {
+                type,
+                path: project
+            };
+        } else {
+            return ''
+        }
+    } else {
+        return ''
+    }
 }
 
 
@@ -32,18 +79,19 @@ function getAppId(propertiesPath) {
     return readPropertiesSync(propertiesPath)['app_id'];
 }
 
+function getAppType(propertiesPath) {
+    return readPropertiesSync(propertiesPath)['type'];
+}
+
 
 const parseRange = (str, size) => {
     if (str.indexOf(",") != -1) {
         return;
     }
-    console.log('parseRange range->', str);
-    console.log('parseRange size->', size);
     str = str.replace('bytes=', '');
     var range = str.split("-"),
         start = parseInt(range[0], 10),
         end = parseInt(range[1], 10);
-        console.log(`start:${start}-end:${end}`);
     // Case: -100
     if (isNaN(start)) {
         start = size - end;
@@ -62,7 +110,36 @@ const parseRange = (str, size) => {
         end: end
     };
 }
+const getProjectPathByAppId = ({
+    appId,
+    workspace
+}) => { // 特定appId对应的项目的根目录.
+    let projectPath = null
+    return new Promise((resolve) => {
+        Fse.walk(workspace, {
+                filter: (file) => {
+                    return Path.resolve(workspace) === Path.resolve(file, "./..")
+                }
+            })
+            .on('data', (item) => {
+                let itemPath = item.path
+                let itemStats = item.stats
+                let configFilePath = Path.join(itemPath, "plugin.properties")
 
+                if (!itemStats.isDirectory() || !Fse.existsSync(configFilePath)) {
+                    return
+                }
+
+                const app_id = getAppId(configFilePath);
+                if (appId === app_id) {
+                    resolve(itemPath)
+                }
+            })
+            .on('end', function () {
+                resolve(projectPath)
+            })
+    })
+}
 exports.readPropertiesSync = readPropertiesSync;
 exports.getAppId = getAppId;
 exports.parseRange = parseRange;
