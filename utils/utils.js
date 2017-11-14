@@ -110,36 +110,6 @@ const parseRange = (str, size) => {
         end: end
     };
 }
-const getProjectPathByAppId = ({
-    appId,
-    workspace
-}) => { // 特定appId对应的项目的根目录.
-    let projectPath = null
-    return new Promise((resolve) => {
-        Fse.walk(workspace, {
-                filter: (file) => {
-                    return Path.resolve(workspace) === Path.resolve(file, "./..")
-                }
-            })
-            .on('data', (item) => {
-                let itemPath = item.path
-                let itemStats = item.stats
-                let configFilePath = Path.join(itemPath, "plugin.properties")
-
-                if (!itemStats.isDirectory() || !Fse.existsSync(configFilePath)) {
-                    return
-                }
-
-                const app_id = getAppId(configFilePath);
-                if (appId === app_id) {
-                    resolve(itemPath)
-                }
-            })
-            .on('end', function () {
-                resolve(projectPath)
-            })
-    })
-}
 exports.readPropertiesSync = readPropertiesSync;
 exports.getAppId = getAppId;
 exports.parseRange = parseRange;
